@@ -14,3 +14,5 @@
 ## touch log.csv
 ## nano log.csv
 ## cat log.csv
+
+## sudo systemctl poweroff
