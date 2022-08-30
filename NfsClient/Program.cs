@@ -19,7 +19,7 @@ if (devices.Contains(rootDevice))
     var files = nfs.GetItemList(sourceFolderName);
 
     if (files.Contains(LogFileName))
-        nfs.Read(@"nfsshare\log.csv", ref stream);
+        nfs.Read($"{sourceFolderName}\\{LogFileName}", ref stream);
     else
         stream = null;
     
