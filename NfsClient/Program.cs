@@ -1,11 +1,12 @@
 ﻿using NFSLibrary;
 using System.Net;
 using System.Text.Json;
+using NfsClient;
 
-var sourceIpAddress = "172.24.131.49";
-var rootDevice = "/";
-var sourceFolderName = "nfsshare";
-var LogFileName = "log.csv";
+const string sourceIpAddress = "10.5.0.5";
+const string rootDevice = "/";
+const string sourceFolderName = "nfsshare"; 
+const string logFileName = "log.csv";
 
 Stream? stream = new MemoryStream();
 var nfs = new NFSClient(NFSClient.NFSVersion.v4);
@@ -18,8 +19,8 @@ if (devices.Contains(rootDevice))
     nfs.MountDevice(device);
     var files = nfs.GetItemList(sourceFolderName);
 
-    if (files.Contains(LogFileName))
-        nfs.Read($"{sourceFolderName}\\{LogFileName}", ref stream);
+    if (files.Contains(logFileName))
+        nfs.Read($"{sourceFolderName}\\{logFileName}", ref stream);
     else
         stream = null;
     
@@ -39,9 +40,8 @@ static List<LogLine> ConvertLogStreamToLogList(Stream stream)
 {
     StreamReader streamReader = new(stream);
     var importingData = new List<LogLine>();
-    string? line;
     stream.Position = 0;
-    while ((line = streamReader.ReadLine()) != null)
+    while (streamReader.ReadLine() is { } line)
     {
         var row = line.Split(',');
 

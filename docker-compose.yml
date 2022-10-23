@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+    nfsclient:
+        image: ${DOCKER_REGISTRY-}nfsclient
+        build:
+            context: .
+            dockerfile: NfsClient/Dockerfile
+        depends_on: 
+            - nfs
+        privileged: true
+        networks:
+            - network
+    nfs:
+        image: itsthenetwork/nfs-server-alpine:12
+        container_name: nfs
+        restart: always
+        privileged: true
+        environment:
+          - SHARED_DIRECTORY=/data
+        volumes:
+          - nfs-volume:/data
+        ports:
+          - 2049:2049
+        networks:
+            network:
+                ipv4_address: 10.5.0.5
+
+volumes:
+  nfs-volume:
+    driver: local
+
+networks:
+  network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
